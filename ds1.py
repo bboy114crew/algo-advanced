@@ -47,7 +47,6 @@ import queue
 N, K = list(map(int, input().split()))
 graph = [[] for i in range(N + 1)]
 boss = dict()
-pos = [[] for i in range(N + 1)]
 result = []
 
 for u in range(1, K + 1):
