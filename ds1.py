@@ -222,121 +222,129 @@
 # else:
 #   print(-1)
 
-# # Beverages
+# Beverages
+import queue
+from heapq import heappush, heappop
+
+case = 0
+while True:
+  try:
+    case += 1
+    N = int(input())
+
+    graph = [[] for i in range(N)]
+    result = []
+
+    drink_dict = dict()
+
+    drink_num_dict = ['' for i in range(N)]
+
+    for i in range(N):
+      drink = input()
+      drink_dict[drink] = i
+      drink_num_dict[i] = drink
+
+    M = int(input())
+    for _ in range(M):
+      B1, B2 = list(map(str, input().split()))
+      graph[drink_dict[B1]].append(drink_dict[B2])
+    
+    def topological_sort_using_kahn(graph, result):
+      in_degree = [0 for _ in range(N)]
+
+      # zero_in_degree = queue.Queue()
+
+      zero_in_degree = []
+
+      # Tính bậc vào của từng đỉnh đỉnhh
+      for u in range(0, N):
+        for v in graph[u]:
+          in_degree[v] += 1
+
+      # Tìm các đỉnh có bậc vào là 0
+      for i in range(0, N):
+        if (in_degree[i] == 0):
+          heappush(zero_in_degree, i)
+      
+      # Thực hiện thuật toán Kahn
+      while (len(zero_in_degree)):
+        u = heappop(zero_in_degree)
+        result.append(u)
+        t = len(result) - 1
+
+        # Mapping u with position in result
+        for v in graph[u]:
+          in_degree[v] -= 1
+          if (in_degree[v] == 0):
+            heappush(zero_in_degree, v)
+
+    topological_sort_using_kahn(graph, result)
+    
+    final = ''
+
+    for r in range(len(result)):
+      index = result[r]
+      final = final + " " + drink_num_dict[index]
+    print('Case #{}: Dilbert should drink beverages in this order:{}.'.format(case, final))
+    print()
+    input()
+  except EOFError:
+      break
+
+# # Answer the boss!
 # import queue
 
-# case = 0
-# while True:
-#   try:
-#     case += 1
-#     N = int(input())
+# T = int(input())
+# for case in range(T):
+#   N, R = list(map(int, input().split()))
+#   graph = [[] for i in range(N)]
+#   result = []
+#   rank = [0 for i in range(N)]
 
-#     graph = [[] for i in range(N + 1)]
-#     result = []
-
-#     drink_dict = dict()
-
-#     drink_num_dict = ['' for i in range(N + 1)]
-
-#     for i in range(N):
-#       drink = input()
-#       drink_dict[drink] = i
-#       drink_num_dict[i] = drink
-
-#     M = int(input())
-#     for _ in range(M):
-#       B1, B2 = list(map(str, input().split()))
-#       graph[drink_dict[B1]].append(drink_dict[B2])
-
-#     def topological_sort_using_kahn(graph, result):
-#       in_degree = [0 for _ in range(N + 1)]
-#       zero_in_degree = queue.Queue()
-
-#       # Tính bậc vào của từng đỉnh đỉnhh
-#       for u in range(1, N + 1):
-#         for v in graph[u]:
-#           in_degree[v] += 1
-
-#       # Tìm các đỉnh có bậc vào là 0
-#       for i in range(1, N + 1):
-#         if (in_degree[i] == 0):
-#           zero_in_degree.put(i)
-      
-#       # Thực hiện thuật toán Kahn
-#       while not zero_in_degree.empty():
-#         u = zero_in_degree.get()
-#         result.append(u)
-
-#         # Mapping u with position in result
-#         for v in graph[u]:
-#           in_degree[v] -= 1
-#           if (in_degree[v] == 0):
-#             zero_in_degree.put(v)
-
-#     topological_sort_using_kahn(graph, result)
-    
-#     final = ''
-
-#     for r in range(len(result)):
-#       index = result[r]
-#       final = final + " " + drink_num_dict[index]
-#     print('Case #{}: Dilbprint()ert should drink beverages in this order:{}.'.format(case, final))
-#     print()
-#   except EOFError:
-#       break
-
-# Answer the boss!
-import queue
-
-T = int(input())
-for case in range(T):
-  N, R = list(map(int, input().split()))
-  graph = [[] for i in range(N)]
-  result = []
-  rank = [0 for i in range(N)]
-
-  for _ in range(R):
-    R1, R2 = list(map(int, input().split()))
-    graph[R2].append(R1)
+#   for _ in range(R):
+#     R1, R2 = list(map(int, input().split()))
+#     graph[R2].append(R1)
   
-  def topological_sort_using_kahn(graph, result):
-    in_degree = [0 for _ in range(N)]
-    zero_in_degree = queue.Queue()
+#   def topological_sort_using_kahn(graph, result):
+#     in_degree = [0 for _ in range(N)]
+#     zero_in_degree = queue.Queue()
 
-    # Tính bậc vào của từng đỉnh đỉnhh
-    for u in range(0, N):
-      for v in graph[u]:
-        in_degree[v] += 1
+#     # Tính bậc vào của từng đỉnh đỉnhh
+#     for u in range(0, N):
+#       for v in graph[u]:
+#         in_degree[v] += 1
 
-    # Tìm các đỉnh có bậc vào là 0
-    for i in range(0, N):
-      if (in_degree[i] == 0):
-        rank[i] = 1
-        zero_in_degree.put(i)
+#     # Tìm các đỉnh có bậc vào là 0
+#     for i in range(0, N):
+#       if (in_degree[i] == 0):
+#         rank[i] = 1
+#         zero_in_degree.put(i)
     
-    # Thực hiện thuật toán Kahn
-    while not zero_in_degree.empty():
-      u = zero_in_degree.get()
-      result.append(u)
+#     # Thực hiện thuật toán Kahn
+#     while not zero_in_degree.empty():
+#       u = zero_in_degree.get()
+#       result.append(u)
 
-      # Mapping u with position in result
-      for v in graph[u]:
-        in_degree[v] -= 1
-        if (in_degree[v] == 0):
-          rank[v] = rank[u] + 1
-          zero_in_degree.put(v)
-  topological_sort_using_kahn(graph, result)
+#       # Mapping u with position in result
+#       for v in graph[u]:
+#         in_degree[v] -= 1
+#         if (in_degree[v] == 0):
+#           rank[v] = rank[u] + 1
+#           zero_in_degree.put(v)
+#   topological_sort_using_kahn(graph, result)
 
-  people_with_rank = dict()
+#   people_with_rank = dict()
 
-  for i in result:
-    people_with_rank[i] = rank[i]
-  print('Scenario #{}:'.format(case + 1))
-  list_data = []
-  for key in people_with_rank:
-    list_data.append((people_with_rank[key], key))
+#   for i in result:
+#     people_with_rank[i] = rank[i]
+#   print('Scenario #{}:'.format(case + 1))
+#   list_data = []
+#   for key in people_with_rank:
+#     list_data.append((people_with_rank[key], key))
   
-  sorted_list = sorted(list_data, key=lambda element: (element[0], element[1]))
+#   sorted_list = sorted(list_data, key=lambda element: (element[0], element[1]))
 
-  for (index, rank) in sorted_list:
-    print(index, rank)
+#   for (index, rank) in sorted_list:
+#     print(index, rank)
+
+# Book of Evil
