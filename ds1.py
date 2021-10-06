@@ -222,74 +222,74 @@
 # else:
 #   print(-1)
 
-# Beverages
-import queue
-from heapq import heappush, heappop
+# # Beverages
+# import queue
+# from heapq import heappush, heappop
 
-case = 0
-while True:
-  try:
-    case += 1
-    N = int(input())
+# case = 0
+# while True:
+#   try:
+#     case += 1
+#     N = int(input())
 
-    graph = [[] for i in range(N)]
-    result = []
+#     graph = [[] for i in range(N)]
+#     result = []
 
-    drink_dict = dict()
+#     drink_dict = dict()
 
-    drink_num_dict = ['' for i in range(N)]
+#     drink_num_dict = ['' for i in range(N)]
 
-    for i in range(N):
-      drink = input()
-      drink_dict[drink] = i
-      drink_num_dict[i] = drink
+#     for i in range(N):
+#       drink = input()
+#       drink_dict[drink] = i
+#       drink_num_dict[i] = drink
 
-    M = int(input())
-    for _ in range(M):
-      B1, B2 = list(map(str, input().split()))
-      graph[drink_dict[B1]].append(drink_dict[B2])
+#     M = int(input())
+#     for _ in range(M):
+#       B1, B2 = list(map(str, input().split()))
+#       graph[drink_dict[B1]].append(drink_dict[B2])
     
-    def topological_sort_using_kahn(graph, result):
-      in_degree = [0 for _ in range(N)]
+#     def topological_sort_using_kahn(graph, result):
+#       in_degree = [0 for _ in range(N)]
 
-      # zero_in_degree = queue.Queue()
+#       # zero_in_degree = queue.Queue()
 
-      zero_in_degree = []
+#       zero_in_degree = []
 
-      # Tính bậc vào của từng đỉnh đỉnhh
-      for u in range(0, N):
-        for v in graph[u]:
-          in_degree[v] += 1
+#       # Tính bậc vào của từng đỉnh đỉnhh
+#       for u in range(0, N):
+#         for v in graph[u]:
+#           in_degree[v] += 1
 
-      # Tìm các đỉnh có bậc vào là 0
-      for i in range(0, N):
-        if (in_degree[i] == 0):
-          heappush(zero_in_degree, i)
+#       # Tìm các đỉnh có bậc vào là 0
+#       for i in range(0, N):
+#         if (in_degree[i] == 0):
+#           heappush(zero_in_degree, i)
       
-      # Thực hiện thuật toán Kahn
-      while (len(zero_in_degree)):
-        u = heappop(zero_in_degree)
-        result.append(u)
-        t = len(result) - 1
+#       # Thực hiện thuật toán Kahn
+#       while (len(zero_in_degree)):
+#         u = heappop(zero_in_degree)
+#         result.append(u)
+#         t = len(result) - 1
 
-        # Mapping u with position in result
-        for v in graph[u]:
-          in_degree[v] -= 1
-          if (in_degree[v] == 0):
-            heappush(zero_in_degree, v)
+#         # Mapping u with position in result
+#         for v in graph[u]:
+#           in_degree[v] -= 1
+#           if (in_degree[v] == 0):
+#             heappush(zero_in_degree, v)
 
-    topological_sort_using_kahn(graph, result)
+#     topological_sort_using_kahn(graph, result)
     
-    final = ''
+#     final = ''
 
-    for r in range(len(result)):
-      index = result[r]
-      final = final + " " + drink_num_dict[index]
-    print('Case #{}: Dilbert should drink beverages in this order:{}.'.format(case, final))
-    print()
-    input()
-  except EOFError:
-      break
+#     for r in range(len(result)):
+#       index = result[r]
+#       final = final + " " + drink_num_dict[index]
+#     print('Case #{}: Dilbert should drink beverages in this order:{}.'.format(case, final))
+#     print()
+#     input()
+#   except EOFError:
+#       break
 
 # # Answer the boss!
 # import queue
@@ -348,3 +348,61 @@ while True:
 #     print(index, rank)
 
 # Book of Evil
+import queue
+
+n, m , d = list(map(int, input().split()))
+
+p = list(map(int, input().split())) # p1, p2, ..., pm
+
+is_p = [False for _ in range(n)]
+
+for cur in p:
+  is_p[cur - 1] = True
+
+graph = [[] for _ in range(n)]
+
+for _ in range(n - 1):
+  a, b = list(map(int, input().split()))
+  graph[a - 1].append(b - 1)
+  graph[b - 1].append(a - 1)
+
+dist = [-1 for _ in range(n)]
+dist1 = [-1 for _ in range(n)]
+dist2 = [-1 for _ in range(n)]
+
+def bfs(graph, start, dist):
+  visited = [False for _ in range(n)]
+
+  q = queue.Queue()
+  visited[start] = True
+  q.put(start)
+  dist[start] = 0
+  while not q.empty():
+    u = q.get()
+    for v in graph[u]:
+      if (not visited[v]):
+        visited[v] = True
+        q.put(v)
+        dist[v] = dist[u] + 1
+bfs(graph, p[0] - 1, dist)
+v1 = p[0] - 1
+for i in range(0, n):
+  if is_p[i] and dist[i] > dist[v1]:
+    v1 = i
+
+bfs(graph, v1, dist)
+v2 = v1
+for i in range(0, n):
+  if is_p[i] and dist[i] > dist[v2]:
+    v2 = i
+
+bfs(graph, v1, dist1)
+bfs(graph, v2, dist2)
+
+result = 0
+
+for i in range(0, n):
+  if dist1[i] <= d and dist2[i] <= d:
+    result += 1
+
+print(result)
