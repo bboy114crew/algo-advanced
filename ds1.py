@@ -163,64 +163,67 @@
 # else:
 #   print("Impossible")
 
-# # King's Path
+# King's Path
 
-# import queue
+import queue
 
-# x1, y1, x2, y2 = list(map(int, input().split()))
+limit = 10**9
+mark = set()
+dist = {}
+dx = [0, 0, 1, -1, 1, -1, 1, -1]
+dy = [1, -1, 0, 0, 1, -1, -1, 1]
 
-# MAX_DIST = int(1e9)
+def calc(x, y):
+  global limit
+  val = x
+  val = val * limit + y
+  return val
 
-# INF = max(x1, y1, x2, y2) + 1
-# dist = [[MAX_DIST] * INF for i in range(INF)]
-# graph = [[False] * INF for i in range(INF)]
-# visited = [[False] * INF for i in range(INF)]
+x0, y0, x1, y1 = list(map(int, input().split()))
+x0 -= 1
+y0 -= 1
+x1 -= 1
+y1 -= 1
+mark.add(calc(x0, y0))
+mark.add(calc(x1, y1))
 
-# graph[x1][y1] = True
-# graph[x2][y2] = True
+n = int(input())
 
-# n = int(input())
-# list_range = []
-# for _ in range(n):
-#   r, a, b = list(map(int, input().split()))
-#   list_range.append((r, a, b))
-#   INF = max(INF, r, a, b) + 1
-#   dist = [[MAX_DIST] * INF for i in range(INF)]
-#   graph = [[False] * INF for i in range(INF)]
-#   visited = [[False] * INF for i in range(INF)]
- 
-# for (r, a, b) in list_range:
-#   for i in range(a, b + 1):
-#     graph[r][i] = True
+for i in range(1, n + 1):
+  r, a, b = map(int, input().split())
+  r -= 1
+  a -= 1
+  b -= 1
+  for j in range(a, b + 1):
+    mark.add(calc(r, j))
 
-# q = queue.Queue()
+def bfs():
+  q = queue.Queue()
 
-# dist[x1][y1] = 0
+  start = calc(x0, y0)
 
-# q.put((x1, y1))
+  q.put(start)
+  dist[start] = 0
 
-# dx = [0,-1,-1,-1,0,1,1,1]
-# dy = [1,1,0,-1,-1,-1,0,1]
+  while not q.empty():
+    u = q.get()
+    x = u // limit
+    y = u % limit
 
-# while not q.empty():
-#   cx, cy = q.get()
+    for i in range(8):
+      cx = x + dx[i]
+      cy = y + dy[i]
+      v = calc(cx, cy)
+      if (0 <= cx < limit and 0 <= cy < limit and v in mark):
+        if v not in dist:
+          dist[v] = dist[u] + 1
+          if v == calc(x1, y1):
+            print(dist[v])
+            return
+          q.put(v)
+  print(-1)
 
-#   for i in range(8):
-#     x = cx + dx[i]
-#     y = cy + dy[i]
-
-#     if x >= 0 and x < INF and y >= 0 and y < INF:
-#       if (graph[x][y] and (not visited[x][y])):
-#         if (dist[x][y] > dist[cx][cy] + 1):
-#           dist[x][y] = dist[cx][cy] + 1
-#           q.put((x, y))
-
-#   visited[cx][cy] = True
-
-# if visited[x2][y2]:
-#   print(dist[x2][y2])
-# else:
-#   print(-1)
+bfs()
 
 # # Beverages
 # import queue
@@ -347,62 +350,62 @@
 #   for (index, rank) in sorted_list:
 #     print(index, rank)
 
-# Book of Evil
-import queue
+# # Book of Evil
+# import queue
 
-n, m , d = list(map(int, input().split()))
+# n, m , d = list(map(int, input().split()))
 
-p = list(map(int, input().split())) # p1, p2, ..., pm
+# p = list(map(int, input().split())) # p1, p2, ..., pm
 
-is_p = [False for _ in range(n)]
+# is_p = [False for _ in range(n)]
 
-for cur in p:
-  is_p[cur - 1] = True
+# for cur in p:
+#   is_p[cur - 1] = True
 
-graph = [[] for _ in range(n)]
+# graph = [[] for _ in range(n)]
 
-for _ in range(n - 1):
-  a, b = list(map(int, input().split()))
-  graph[a - 1].append(b - 1)
-  graph[b - 1].append(a - 1)
+# for _ in range(n - 1):
+#   a, b = list(map(int, input().split()))
+#   graph[a - 1].append(b - 1)
+#   graph[b - 1].append(a - 1)
 
-dist = [-1 for _ in range(n)]
-dist1 = [-1 for _ in range(n)]
-dist2 = [-1 for _ in range(n)]
+# dist = [-1 for _ in range(n)]
+# dist1 = [-1 for _ in range(n)]
+# dist2 = [-1 for _ in range(n)]
 
-def bfs(graph, start, dist):
-  visited = [False for _ in range(n)]
+# def bfs(graph, start, dist):
+#   visited = [False for _ in range(n)]
 
-  q = queue.Queue()
-  visited[start] = True
-  q.put(start)
-  dist[start] = 0
-  while not q.empty():
-    u = q.get()
-    for v in graph[u]:
-      if (not visited[v]):
-        visited[v] = True
-        q.put(v)
-        dist[v] = dist[u] + 1
-bfs(graph, p[0] - 1, dist)
-v1 = p[0] - 1
-for i in range(0, n):
-  if is_p[i] and dist[i] > dist[v1]:
-    v1 = i
+#   q = queue.Queue()
+#   visited[start] = True
+#   q.put(start)
+#   dist[start] = 0
+#   while not q.empty():
+#     u = q.get()
+#     for v in graph[u]:
+#       if (not visited[v]):
+#         visited[v] = True
+#         q.put(v)
+#         dist[v] = dist[u] + 1
+# bfs(graph, p[0] - 1, dist)
+# v1 = p[0] - 1
+# for i in range(0, n):
+#   if is_p[i] and dist[i] > dist[v1]:
+#     v1 = i
 
-bfs(graph, v1, dist)
-v2 = v1
-for i in range(0, n):
-  if is_p[i] and dist[i] > dist[v2]:
-    v2 = i
+# bfs(graph, v1, dist)
+# v2 = v1
+# for i in range(0, n):
+#   if is_p[i] and dist[i] > dist[v2]:
+#     v2 = i
 
-bfs(graph, v1, dist1)
-bfs(graph, v2, dist2)
+# bfs(graph, v1, dist1)
+# bfs(graph, v2, dist2)
 
-result = 0
+# result = 0
 
-for i in range(0, n):
-  if dist1[i] <= d and dist2[i] <= d:
-    result += 1
+# for i in range(0, n):
+#   if dist1[i] <= d and dist2[i] <= d:
+#     result += 1
 
-print(result)
+# print(result)
