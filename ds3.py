@@ -66,23 +66,42 @@
 
 # permutations(s, 0, len(s))
 
-# Distinct Permutations Of String
-def should_swap(s, start, end):
-  for i in range(start, end):
-    if s[i] == s[end]:
-      return False
-  return True
+# # Distinct Permutations Of String
+# def should_swap(s, start, end):
+#   for i in range(start, end):
+#     if s[i] == s[end]:
+#       return False
+#   return True
 
-def distinct_permutations(s, l, r):
-  if l >= r:
-    print(''.join(s))
+# def distinct_permutations(s, l, r):
+#   if l >= r:
+#     print(''.join(s))
+#     return
+#   for i in range(l, r):
+#     check = should_swap(s, l, i)
+#     if check == True:
+#       s[l], s[i] = s[i], s[l]
+#       distinct_permutations(s, l + 1, r)
+#       s[l], s[i] = s[i], s[l]
+
+# s = list("AABB")
+# distinct_permutations(s, 0 , len(s))
+
+# Lotto
+def gen(arr, res, left, n, k):
+  if k == 0:
+    print(" ".join(str(arr[r]) for r in res))
     return
-  for i in range(l, r):
-    check = should_swap(s, l, i)
-    if check == True:
-      s[l], s[i] = s[i], s[l]
-      distinct_permutations(s, l + 1, r)
-      s[l], s[i] = s[i], s[l]
+  for i in range(left, n):
+    res.append(i)
+    gen(arr, res, i + 1, n, k - 1)
+    res.pop()
 
-s = list("AABB")
-distinct_permutations(s, 0 , len(s))
+while True:
+  n, *arr = list(map(int, input().split()))
+  res = []
+  if n == 0:
+    break
+  
+  gen(arr, res, 0, n, 6)
+
