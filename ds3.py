@@ -78,3 +78,11 @@ def distinct_permutations(s, l, r):
     print(''.join(s))
     return
   for i in range(l, r):
+    check = should_swap(s, l, i)
+    if check == True:
+      s[l], s[i] = s[i], s[l]
+      distinct_permutations(s, l + 1, r)
+      s[l], s[i] = s[i], s[l]
+
+s = list("AABB")
+distinct_permutations(s, 0 , len(s))
