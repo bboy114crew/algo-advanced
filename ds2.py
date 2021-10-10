@@ -153,6 +153,30 @@ O(2^K * (N + log(K))) là chi phí tìm ra tất cả các dãy bit tương ứn
 #       result = min(result, count)
 #   print(result)
 
+# Sansa and XOR
+"""
+Ta có 3 ⊕ 3 = 0 và 3 ⊕ 3 ⊕ 3 = 3.
+Từ đó ta có nhận xét sau nếu XOR n lần a với nhau:
+Nếu n lẻ thì kết quả là a
+Nếu n chẳn thì kết quả là 0
+"""
+T = int(input())
+for _ in range(T):
+  n = int(input())
+  arr = list(map(int, input().split()))
+  if n % 2 == 1:
+    result = arr[0]
+  else:
+    result = 0
+  
+  for i in range(1, n):
+    if (n - i)*(i + 1) % 2 == 1:
+      result = result ^ arr[i]
+    else:
+      result = result ^ 0
+
+  print(result)
+
 # # Online Courses in BSU
 # import sys
 # sys.setrecursionlimit(100000)
