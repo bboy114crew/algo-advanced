@@ -153,30 +153,62 @@ O(2^K * (N + log(K))) là chi phí tìm ra tất cả các dãy bit tương ứn
 #       result = min(result, count)
 #   print(result)
 
-# Sansa and XOR
-"""
-Ta có 3 ⊕ 3 = 0 và 3 ⊕ 3 ⊕ 3 = 3.
-Từ đó ta có nhận xét sau nếu XOR n lần a với nhau:
-Nếu n lẻ thì kết quả là a
-Nếu n chẳn thì kết quả là 0
-"""
-T = int(input())
-for _ in range(T):
-  n = int(input())
-  arr = list(map(int, input().split()))
-  if n % 2 == 1:
-    result = arr[0]
-  else:
-    result = 0
+# # Sansa and XOR
+# """
+# Ta có 3 ⊕ 3 = 0 và 3 ⊕ 3 ⊕ 3 = 3.
+# Từ đó ta có nhận xét sau nếu XOR n lần a với nhau:
+# Nếu n lẻ thì kết quả là a
+# Nếu n chẳn thì kết quả là 0
+# """
+# T = int(input())
+# for _ in range(T):
+#   n = int(input())
+#   arr = list(map(int, input().split()))
+#   if n % 2 == 1:
+#     result = arr[0]
+#   else:
+#     result = 0
   
-  for i in range(1, n):
-    if (n - i)*(i + 1) % 2 == 1:
-      result = result ^ arr[i]
-    else:
-      result = result ^ 0
+#   for i in range(1, n):
+#     if (n - i)*(i + 1) % 2 == 1:
+#       result = result ^ arr[i]
+#     else:
+#       result = result ^ 0
 
-  print(result)
+#   print(result)
 
+# Power of Two
+"""
+Trước hết, ta cần làm rõ rằng một subset, tức tập hợp con là một tập hợp bao gồm một hoặc một số các phần tử trong tập ban đầu và không nhất thiết phải liên tục. Do đó, nếu ta giải bài toán theo hướng phát sinh tất cả các subset có thể có của tập hợp ban đầu và kiểm tra kết quả AND của các phần tử trong mỗi subset được phát sinh có đúng là lũy thừa 2 không sẽ rất tốn kém.
+
+Mặt khác, ta biết rằng nếu có bất cứ subset nào mà kết quả AND của nó bằng lũy thừa 2 thì lũy thừa đó cũng chỉ thuộc trong khoảng 1, 2, 4, ..., 2^30
+​(vì mảng được cho chỉ chứa các số nguyên không âm, nên khi AND các số lại chắc chắn ta được một số nguyên có giá trị cao nhất là 2^31−1, như vậy lũy thừa 2 cao nhất là 2^30.
+
+Ý tưởng: Duyệt qua từng lũy thừa 2 từ 1 đến 2^30 và kiểm tra kết quả AND các phần tử trong subset tốt nhất hiện tại có bằng với lũy thừa 2 đang xét hay không. Nếu đúng, ta ngay lập tức kết luận “YES”. Nếu đã duyệt qua tất cả lũy thừa 2 mà vẫn không có subset nào AND ra được kết quả tương ứng, in ra “NO”.
+
+Subset tốt nhất ở đây là subset mà khi AND các phần tử của nó có khả năng cho lũy thừa 2 cao nhất.
+Với một số AA là lũy thừa 2, tức số AA phải có dạng 0...010...0 (chỉ có duy nhất một bit 1 tại vị trí x) thì subset tốt nhất có khả năng cho kết quả AND đúng bằng số A đó sẽ chỉ chứa các phần tử mà bit tại vị trí x cũng bằng 1.
+Nói cách khác, subset tốt nhất sẽ chỉ bao gồm các số mà khi AND nó với số AA không làm mất bit 1 duy nhất của số A, tức không làm cho số A bằng 0.
+Như vậy, với một số AA, subset tốt nhất tương ứng sẽ được xây dựng bằng cách lấy tất cả các phần tử trong mảng thỏa điều kiện khi AND với A không bằng 0 (bằng cách lấy càng nhiều càng tốt như vậy, ta sẽ tăng khả năng các bit đằng sau bit 1 khi AND với nhau sẽ cho kết quả là 0).
+Độ phức tạp: O(T * N * max(log(Ai)) với T là số lượng bộ test, N là số phần tử của mảng, A_i là phần tử thứ ii của mảng.
+
+O(max(log(Ai))) là chi phí phát sinh tất cả các số lũy thừa 2.
+"""
+import functools
+def solve():
+  n = int(input())
+  a = list(map(int, input().split()))
+  for i in range(32):
+    sub_set = list(filter(lambda x: (x >> i) & 1, a))
+    sum_xor = functools.reduce(lambda x, y: x & y, sub_set, 0x7FFFFFFF)
+    if sum_xor == (1 << i):
+      print('YES')
+      return
+  print('NO')
+
+t = int(input())
+for _ in range(t):
+  solve()
 # # Online Courses in BSU
 # import sys
 # sys.setrecursionlimit(100000)
