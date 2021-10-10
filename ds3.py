@@ -8,7 +8,7 @@
 #     print()
 #   print()
 
-# def check(board, col, row):
+# def check(board, row, col):
 #   # check vertical
 #   for i in range(row):
 #     if board[i][col]:
@@ -52,16 +52,29 @@
 
 # N_Queen(board, 0)
 
-# Permutations of string
-def permutations(s, l, r):
-  if l == r:
+# # Permutations of string
+# def permutations(s, l, r):
+#   if l == r:
+#     print(''.join(s))
+#   else:
+#     for i in range(l, r):
+#       s[l], s[i] = s[i], s[l]
+#       permutations(s, l + 1, r)
+#       s[l], s[i] = s[i], s[l]
+
+# s = list("ABCD")
+
+# permutations(s, 0, len(s))
+
+# Distinct Permutations Of String
+def should_swap(s, start, end):
+  for i in range(start, end):
+    if s[i] == s[end]:
+      return False
+  return True
+
+def distinct_permutations(s, l, r):
+  if l >= r:
     print(''.join(s))
-  else:
-    for i in range(l, r):
-      s[l], s[i] = s[i], s[l]
-      permutations(s, l + 1, r)
-      s[l], s[i] = s[i], s[l]
-
-s = list("ABCD")
-
-permutations(s, 0, len(s))
+    return
+  for i in range(l, r):
