@@ -55,55 +55,55 @@ Ta có nhận xét là các cuộc họp được thực hiện sau nên có e[u
 
 Độ phức tạp tính toán: O((N+M)*log(n)).
 """
-from heapq import heappush, heappop
+# from heapq import heappush, heappop
 
-n = int(input())
+# n = int(input())
 
-d_e = [0 for i in range(n + 1)]
+# d_e = [0 for i in range(n + 1)]
 
-graph = [[] for i in range(n + 1)]
-result = []
+# graph = [[] for i in range(n + 1)]
+# result = []
 
-for i in range(n):
-  e, d, *b = list(map(int, input().split()))
-  d_e[i + 1] = e
-  for j in range(d):
-    graph[i + 1].append(b[j])
+# for i in range(n):
+#   e, d, *b = list(map(int, input().split()))
+#   d_e[i + 1] = e
+#   for j in range(d):
+#     graph[i + 1].append(b[j])
 
-def topological_sort_using_kahn(graph, result):
-  in_degree = [0 for _ in range(n + 1)]
+# def topological_sort_using_kahn(graph, result):
+#   in_degree = [0 for _ in range(n + 1)]
 
-  zero_in_degree = []
+#   zero_in_degree = []
 
-  # Tính bậc vào của từng đỉnh đỉnhh
-  for u in range(1, n + 1):
-    for v in graph[u]:
-      in_degree[v] += 1
+#   # Tính bậc vào của từng đỉnh đỉnhh
+#   for u in range(1, n + 1):
+#     for v in graph[u]:
+#       in_degree[v] += 1
 
-  # Tìm các đỉnh có bậc vào là 0
-  for i in range(1, n + 1):
-    if (in_degree[i] == 0):
-      heappush(zero_in_degree, (d_e[i], i))
+#   # Tìm các đỉnh có bậc vào là 0
+#   for i in range(1, n + 1):
+#     if (in_degree[i] == 0):
+#       heappush(zero_in_degree, (d_e[i], i))
   
-  i = n - 1
-  ans = -1
+#   i = n - 1
+#   ans = -1
 
-  # Thực hiện thuật toán Kahn
-  while (len(zero_in_degree)):
-    ei, u = heappop(zero_in_degree)
-    result.append(u)
-    cost = d_e[u] + i;
-    i -= 1
-    ans = max(ans, cost);
-    # Mapping u with position in result
-    for v in graph[u]:
-      in_degree[v] -= 1
-      if (in_degree[v] == 0):
-        heappush(zero_in_degree, (d_e[v], v))
+#   # Thực hiện thuật toán Kahn
+#   while (len(zero_in_degree)):
+#     ei, u = heappop(zero_in_degree)
+#     result.append(u)
+#     cost = d_e[u] + i;
+#     i -= 1
+#     ans = max(ans, cost);
+#     # Mapping u with position in result
+#     for v in graph[u]:
+#       in_degree[v] -= 1
+#       if (in_degree[v] == 0):
+#         heappush(zero_in_degree, (d_e[v], v))
   
-  print(ans)
+#   print(ans)
 
-topological_sort_using_kahn(graph, result)
+# topological_sort_using_kahn(graph, result)
 
 # Samu and her Birthday Party
 """
@@ -123,7 +123,7 @@ O(2^K * (N + log(K))) là chi phí tìm ra tất cả các dãy bit tương ứn
 
 # t = int(input())
 # for _ in range(t):
-#   n, k = map(int, input().split())
+#   n, k = list(map(int, input().split()))
 #   dishes = list()
 #   select = list()
 #   for i in range(n):
@@ -152,3 +152,55 @@ O(2^K * (N + log(K))) là chi phí tìm ra tất cả các dãy bit tương ứn
 #         mask //= 2
 #       result = min(result, count)
 #   print(result)
+
+# # Online Courses in BSU
+# import sys
+# sys.setrecursionlimit(100000)
+
+# def dfs(u, graph, res, visited):
+#   cycle = False
+  
+#   if visited[u] == 0:
+#     visited[u] = 0
+#     for v in graph[u]:
+#       cycle = cycle or dfs(v, graph, res, visited)
+#     # visited[u] == 2, đỉnh u đã được thăm bởi 1 đường đi trước đó
+#     visited[u] = 2
+#     res.append(u + 1)
+#   # Đỉnh đang được thăm trên đường đi hiên tại
+#   elif visited[u] == 1:
+#     cycle = True
+#   return cycle
+
+
+# def schedule(n, graph, needed_courses, visited):
+#   cycle = False
+#   res = []
+#   for u in needed_courses:
+#     if dfs(u, graph, res, visited):
+#       cycle = True
+#       break
+
+#   if cycle:
+#     return -1
+  
+#   return res
+# if __name__ == '__main__':
+#   n, k = list(map(int, input().split()))
+#   needed_courses = list(map(int, input().split()))
+
+#   visited = [0 for _ in range(n)]
+
+#   graph = [[] for _ in range(n)]
+
+#   for i in range(n):
+#     t, *course = list(map(int, input().split()))
+#     for c in course:
+#       graph[i].append(c - 1)
+
+#   res = schedule(n, graph, needed_courses, visited)
+#   if res == -1:
+#     print(res)
+#   else:
+#     print(len(res))
+#     print(' '.join(map(str, res)))
