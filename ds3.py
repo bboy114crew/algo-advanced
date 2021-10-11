@@ -84,24 +84,57 @@
 #       distinct_permutations(s, l + 1, r)
 #       s[l], s[i] = s[i], s[l]
 
-# s = list("AABB")
+# s = list("0011")
 # distinct_permutations(s, 0 , len(s))
 
-# Lotto
-def gen(arr, res, left, n, k):
-  if k == 0:
-    print(" ".join(str(arr[r]) for r in res))
-    return
-  for i in range(left, n):
-    res.append(i)
-    gen(arr, res, i + 1, n, k - 1)
-    res.pop()
+# # Lotto
+# def gen(arr, res, left, n, k):
+#   if k == 0:
+#     print(" ".join(str(arr[r]) for r in res))
+#     return
+#   for i in range(left, n):
+#     res.append(i)
+#     gen(arr, res, i + 1, n, k - 1)
+#     res.pop()
 
-while True:
-  n, *arr = list(map(int, input().split()))
-  res = []
-  if n == 0:
-    break
+# while True:
+#   n, *arr = list(map(int, input().split()))
+#   res = []
+#   if n == 0:
+#     break
   
-  gen(arr, res, 0, n, 6)
+#   gen(arr, res, 0, n, 6)
 
+# The Hamming Distance Problem
+
+def should_swap(s, start, end):
+  for i in range(start, end):
+    if s[i] == s[end]:
+      return False
+  return True
+
+def distinct_permutations(s, l, r):
+  if l >= r:
+    print(''.join(s))
+    return
+  for i in range(l, r):
+    check = should_swap(s, l, i)
+    if check == True:
+      s[l], s[i] = s[i], s[l]
+      distinct_permutations(s, l + 1, r)
+      s[l], s[i] = s[i], s[l]
+
+T = int(input())
+input()
+for case in range(T):
+  N, H = list(map(int, input().split()))
+  if case != T - 1:
+    input()
+  origin_string = []
+  for i in range(N):
+    if i < N - H:
+      origin_string.append(str(0))
+    else:
+      origin_string.append(str(1))
+  distinct_permutations(origin_string, 0 , len(origin_string))
+  print()
