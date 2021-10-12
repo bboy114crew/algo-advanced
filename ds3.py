@@ -105,36 +105,82 @@
   
 #   gen(arr, res, 0, n, 6)
 
-# The Hamming Distance Problem
+# # The Hamming Distance Problem
+# def should_swap(s, start, end):
+#   for i in range(start, end):
+#     if s[i] == s[end]:
+#       return False
+#   return True
 
-def should_swap(s, start, end):
-  for i in range(start, end):
-    if s[i] == s[end]:
-      return False
-  return True
+# def distinct_permutations(s, l, r):
+#   if l >= r:
+#     print(''.join(s))
+#     return
+#   for i in range(l, r):
+#     check = should_swap(s, l, i)
+#     if check == True:
+#       s[l], s[i] = s[i], s[l]
+#       distinct_permutations(s, l + 1, r)
+#       s[l], s[i] = s[i], s[l]
 
-def distinct_permutations(s, l, r):
-  if l >= r:
-    print(''.join(s))
-    return
-  for i in range(l, r):
-    check = should_swap(s, l, i)
-    if check == True:
-      s[l], s[i] = s[i], s[l]
-      distinct_permutations(s, l + 1, r)
-      s[l], s[i] = s[i], s[l]
+# T = int(input())
+# input()
+# for case in range(T):
+#   N, H = list(map(int, input().split()))
+#   if case != T - 1:
+#     input()
+#   origin_string = []
+#   for i in range(N):
+#     if i < N - H:
+#       origin_string.append(str(0))
+#     else:
+#       origin_string.append(str(1))
+#   distinct_permutations(origin_string, 0 , len(origin_string))
+#   print()
 
+# Digger Octaves
 T = int(input())
-input()
-for case in range(T):
-  N, H = list(map(int, input().split()))
-  if case != T - 1:
-    input()
-  origin_string = []
+for _ in range(T):
+  N = int(input())
+  graph = []
+  visited = [[0 for _ in range(N)] for _ in range(N)]
+  container = []
   for i in range(N):
-    if i < N - H:
-      origin_string.append(str(0))
-    else:
-      origin_string.append(str(1))
-  distinct_permutations(origin_string, 0 , len(origin_string))
-  print()
+    row = input()
+    graph.append([*row])
+
+  m1 = [0 , 0 , -1 , 1]
+  m2 = [-1 , 1 , 0 , 0]
+
+  def countOctaves(n, r, c, num_of_oct, arr):
+    if(r < 0 or c < 0 or r > n - 1 or c > n - 1):
+      return
+    
+    if(graph[r][c] == '.' or visited[r][c] == 1):
+      return
+    
+    visited[r][c] = 1 ;
+
+    set_arr = set(arr)
+    set_arr.add(f'{r}{c}')
+    arr = list(set_arr)
+
+    if(num_of_oct == 8):
+      arr.sort()
+      container.append(arr)
+      visited[r][c] = 0
+      return
+    
+    for i in range(4):
+      tempr = r + m1[i];
+      tempc = c + m2[i];
+      countOctaves(n, tempr, tempc, num_of_oct + 1, arr)
+    visited[r][c] = 0
+
+  for i in range(N):
+    for j in range(N):
+      list_square = []
+      countOctaves(N, i, j, 1, list_square)
+  
+  result = set(tuple(i) for i in container)
+  print(len(result))
