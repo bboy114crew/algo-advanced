@@ -202,40 +202,101 @@ Kết quả là kích thước của set.
 Mỗi bước tiếp theo có 4 hướng đi, nhưng phải loại bỏ hướng từ bước trước đó nên còn lại 3 lựa chọn.
 Vậy số trạng thái tối đa có thể tạo thành là O(64 * 3^7)
 """
-dx = [0, 0, 1, -1]
-dy = [1, -1, 0, 0]
+# dx = [0, 0, 1, -1]
+# dy = [1, -1, 0, 0]
 
-def dfs(sx, sy, step, bits):
-  global octaves, graph, n, visited
-  visited[sx][sy] = True
-  bits |= 1 << (sx * n + sy)
+# def dfs(sx, sy, step, bits):
+#   global octaves, graph, n, visited
+#   visited[sx][sy] = True
+#   bits |= 1 << (sx * n + sy)
 
-  if step == 8:
-    octaves.add(bits)
-  else:
-    for i in range(4):
-      x, y = sx + dx[i], sy + dy[i]
-      if x in range(n) and y in range(n) and not visited[x][y] and graph[x][y] == 'X':
-        dfs(x, y, step + 1, bits)
+#   if step == 8:
+#     octaves.add(bits)
+#   else:
+#     for i in range(4):
+#       x, y = sx + dx[i], sy + dy[i]
+#       if x in range(n) and y in range(n) and not visited[x][y] and graph[x][y] == 'X':
+#         dfs(x, y, step + 1, bits)
               
-  bits &= ~(1 << (sx * n + sy))
-  visited[sx][sy] = False
+#   bits &= ~(1 << (sx * n + sy))
+#   visited[sx][sy] = False
     
 
-t = int(input())
-for _ in range(t):
-  n = int(input())
-  visited = [[False] * n for i in range(n)]
-  graph = []
-  octaves = set()
+# t = int(input())
+# for _ in range(t):
+#   n = int(input())
+#   visited = [[False] * n for i in range(n)]
+#   graph = []
+#   octaves = set()
 
-  for i in range(n):
-    graph.append(input())
+#   for i in range(n):
+#     graph.append(input())
   
-  for i in range(n):
-    for j in range(n):
-      if graph[i][j] == 'X':
-        bits = 0
-        dfs(i, j, 1, bits)
+#   for i in range(n):
+#     for j in range(n):
+#       if graph[i][j] == 'X':
+#         bits = 0
+#         dfs(i, j, 1, bits)
 
-  print(len(octaves))
+#   print(len(octaves))
+
+
+# Minimize Absolute Difference
+"""
+Vì số lượng phần tử đầu vào rất nhỏ, chỉ có 5 phần tử.
+Do đó, ta có thể sử dụng backtracking để có thể sinh ra toàn bộ 5! trường hợp, mỗi trường hợp ta sẽ tính giá trị của biểu thức và so sánh để tìm ra trường hợp có giá trị nhỏ nhất có thể.
+
+Tuy nhiên, cách làm ở trên không được tốt và đảm bảo đúng 100%, vì khi ta tính các số theo dạng số thực, rất dễ bị sai số và khi so sánh chúng với nhau không khớp 100%.
+Thay vì như thế, ta có thể so sánh theo kiểu số nguyên bằng cách : Biến đổi giá trị |(a/b) - (c/d)| thành |(a * d - b * c) / (b * d)| = |(a * d - b * c)| / (b * d).
+Như vậy, với mỗi giá trị, ta sẽ lưu dưới dạng một cặp gồm tử và mẫu đều là 2 số nguyên dương.
+Ta tạo một hàm comp(a, b) với a là phân số thứ nhất và bb là phân số thứ 22.
+Hàm comp(a, b) này trả ra true hoặc false tương ứng là a có nhỏ hơn bb hay không bằng cách so sánh giữa 2 số nguyên. Phân số (a.tu / a.mau) < (b.tu / b.mau) khi và chỉ khi a.tu * b.mau < b.tu * a.mau.
+Cần lưu ý việc tràn số khi so sánh phân số như thế này, vì giá trị của những phần tử trong mảng x đầu vào không vượt quá 10000.
+
+Để thực hiện hàm backtracking để thực hiện việc liệt kê những hoán vị, ta sẽ tạo hàm backTrack(pos) với ý nghĩa: Ta đang điền vị trí phần tử trong dãy vào vị trí pos hiện tại.
+Ta lưu các vị trí vào một mảng p[ ]. Nếu pos = 3 (đủ 4 phần tử) thì ta tiến hành tính giá trị |(a/b) - (c/d)|, ngược lại ta tiếp tục gọi backtracking với pos + 1.
+Sau khi gọi backTrack(pos + 1), ta hủy vết đã lưu các phần tử trước đó.
+
+Độ phức tạp: O(N! * N) với N là số lượng phần tử trong dãy đầu vào.
+"""
+def cmp(num, denom, _num, _denom):
+  return (num * _denom < _num * denom)
+
+def check(c, a, minn, ans):
+  num = abs(c[a[0]] * c[a[3]] - c[a[1]] * c[a[2]])
+  denom = c[a[1]] * c[a[3]]
+  
+  if cmp(num, denom, minn[0], minn[1]):
+    minn[0] = num
+    minn[1] = denom
+    for i in range(4):
+      ans[i] = a[i]
+
+def permutation(c, a, b, j, minn, ans):
+  for i in range(5):
+    if (b[i]):
+      a[j] = i
+      b[i] = False
+      if j == 4:
+        check(c, a, minn, ans)
+      else:
+        permutation(c, a, b, j + 1, minn, ans)
+      b[i] = True
+
+a = []
+b = []
+ans = []
+c = list(map(int, input().split()))
+minn = []
+minn.append(1000000)
+minn.append(1)
+
+for i in range(5):
+  a.append(i)
+
+for i in range(4):
+  ans.append(0)
+
+b = [True] * 6
+permutation(c, a, b, 0, minn, ans)
+print(str(ans[0]) + " " + str(ans[1]) + " " + str(ans[2]) + " " + str(ans[3]))
