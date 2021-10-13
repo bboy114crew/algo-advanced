@@ -185,6 +185,23 @@
 #   result = set(tuple(i) for i in container)
 #   print(len(result))
 # Faster solution
+"""
+Vì N <= 8 nên ta chỉ có tối đa 6464 ô, và vì trạng thái của các ô chỉ có thể là X hoặc . nên ta có thể quy thành các số trong dãy bit, với 11 là X và 0 là .
+
+Ta đánh số các ô trên bảng từ 00 đến N^2 - 1 theo thứ tự từ trên xuống dưới và từ trái sang phải.
+Như vậy, giả sử để biểu diễn trạng thái {XXX, X.X, XXX}, dãy bit của ta chính là 111101111.
+Ta thực hiện duyệt DFS trên bảng này, với một ô xuất phát là ô (i,j), ta gọi hàm DFS(step, x, y) với ý nghĩa:
+Hiện tại đang đứng tại ô (x,y)(x,y) là một ô có chứa lục bảo, step là số lượng lục bảo hiện tại. Nếu step = 8,
+điều này đồng nghĩa với việc ta đã có một hành trình thu đủ 88 lục bảo, ta sẽ đưa trạng thái dãy bit thỏa mãn ở trên vào set nhằm mục đích loại bỏ những trạng thái giống nhau.
+Ngược lại, ta sẽ thăm tiếp đỉnh kề (nx, ny) với (x, y) với step thêm 1 đơn vị.
+Sau đó, ta hủy vết đã đánh dấu ở ô (nx, ny) để tiến hành tìm một đường đi khác.
+
+Kết quả là kích thước của set.
+
+Độ phức tạp: Trong trường hợp xấu nhất, ta có 64 lựa chọn cho đỉnh bắt đầu.
+Mỗi bước tiếp theo có 4 hướng đi, nhưng phải loại bỏ hướng từ bước trước đó nên còn lại 3 lựa chọn.
+Vậy số trạng thái tối đa có thể tạo thành là O(64 * 3^7)
+"""
 dx = [0, 0, 1, -1]
 dy = [1, -1, 0, 0]
 
