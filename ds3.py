@@ -139,48 +139,86 @@
 #   print()
 
 # Digger Octaves
-T = int(input())
-for _ in range(T):
-  N = int(input())
-  graph = []
-  visited = [[0 for _ in range(N)] for _ in range(N)]
-  container = []
-  for i in range(N):
-    row = input()
-    graph.append([*row])
+# T = int(input())
+# for _ in range(T):
+#   N = int(input())
+#   graph = []
+#   visited = [[0 for _ in range(N)] for _ in range(N)]
+#   container = []
+#   for i in range(N):
+#     row = input()
+#     graph.append([*row])
 
-  m1 = [0 , 0 , -1 , 1]
-  m2 = [-1 , 1 , 0 , 0]
+#   m1 = [0 , 0 , -1 , 1]
+#   m2 = [-1 , 1 , 0 , 0]
 
-  def countOctaves(n, r, c, num_of_oct, arr):
-    if(r < 0 or c < 0 or r > n - 1 or c > n - 1):
-      return
+#   def countOctaves(n, r, c, num_of_oct, arr):
+#     if(r < 0 or c < 0 or r > n - 1 or c > n - 1):
+#       return
     
-    if(graph[r][c] == '.' or visited[r][c] == 1):
-      return
+#     if(graph[r][c] == '.' or visited[r][c] == 1):
+#       return
     
-    visited[r][c] = 1 ;
+#     visited[r][c] = 1 ;
 
-    set_arr = set(arr)
-    set_arr.add(f'{r}{c}')
-    arr = list(set_arr)
+#     set_arr = set(arr)
+#     set_arr.add(f'{r}{c}')
+#     arr = list(set_arr)
 
-    if(num_of_oct == 8):
-      arr.sort()
-      container.append(arr)
-      visited[r][c] = 0
-      return
+#     if(num_of_oct == 8):
+#       arr.sort()
+#       container.append(arr)
+#       visited[r][c] = 0
+#       return
     
-    for i in range(4):
-      tempr = r + m1[i];
-      tempc = c + m2[i];
-      countOctaves(n, tempr, tempc, num_of_oct + 1, arr)
-    visited[r][c] = 0
+#     for i in range(4):
+#       tempr = r + m1[i];
+#       tempc = c + m2[i];
+#       countOctaves(n, tempr, tempc, num_of_oct + 1, arr)
+#     visited[r][c] = 0
 
-  for i in range(N):
-    for j in range(N):
-      list_square = []
-      countOctaves(N, i, j, 1, list_square)
+#   for i in range(N):
+#     for j in range(N):
+#       list_square = []
+#       countOctaves(N, i, j, 1, list_square)
   
-  result = set(tuple(i) for i in container)
-  print(len(result))
+#   result = set(tuple(i) for i in container)
+#   print(len(result))
+# Faster solution
+dx = [0, 0, 1, -1]
+dy = [1, -1, 0, 0]
+
+def dfs(sx, sy, step, bits):
+  global octaves, graph, n, visited
+  visited[sx][sy] = True
+  bits |= 1 << (sx * n + sy)
+
+  if step == 8:
+    octaves.add(bits)
+  else:
+    for i in range(4):
+      x, y = sx + dx[i], sy + dy[i]
+      if x in range(n) and y in range(n) and not visited[x][y] and graph[x][y] == 'X':
+        dfs(x, y, step + 1, bits)
+              
+  bits &= ~(1 << (sx * n + sy))
+  visited[sx][sy] = False
+    
+
+t = int(input())
+for _ in range(t):
+  n = int(input())
+  visited = [[False] * n for i in range(n)]
+  graph = []
+  octaves = set()
+
+  for i in range(n):
+    graph.append(input())
+  
+  for i in range(n):
+    for j in range(n):
+      if graph[i][j] == 'X':
+        bits = 0
+        dfs(i, j, 1, bits)
+
+  print(len(octaves))
