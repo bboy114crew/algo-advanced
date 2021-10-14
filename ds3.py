@@ -259,44 +259,116 @@ Sau khi gọi backTrack(pos + 1), ta hủy vết đã lưu các phần tử trư
 
 Độ phức tạp: O(N! * N) với N là số lượng phần tử trong dãy đầu vào.
 """
-def cmp(num, denom, _num, _denom):
-  return (num * _denom < _num * denom)
+# def cmp(num, denom, _num, _denom):
+#   return (num * _denom < _num * denom)
 
-def check(c, a, minn, ans):
-  num = abs(c[a[0]] * c[a[3]] - c[a[1]] * c[a[2]])
-  denom = c[a[1]] * c[a[3]]
+# def check(c, a, minn, ans):
+#   num = abs(c[a[0]] * c[a[3]] - c[a[1]] * c[a[2]])
+#   denom = c[a[1]] * c[a[3]]
   
-  if cmp(num, denom, minn[0], minn[1]):
-    minn[0] = num
-    minn[1] = denom
+#   if cmp(num, denom, minn[0], minn[1]):
+#     minn[0] = num
+#     minn[1] = denom
+#     for i in range(4):
+#       ans[i] = a[i]
+
+# def permutation(c, a, b, j, minn, ans):
+#   for i in range(5):
+#     if (b[i]):
+#       a[j] = i
+#       b[i] = False
+#       if j == 4:
+#         check(c, a, minn, ans)
+#       else:
+#         permutation(c, a, b, j + 1, minn, ans)
+#       b[i] = True
+
+# a = []
+# b = []
+# ans = []
+# c = list(map(int, input().split()))
+# minn = []
+# minn.append(1000000)
+# minn.append(1)
+
+# for i in range(5):
+#   a.append(i)
+
+# for i in range(4):
+#   ans.append(0)
+
+# b = [True] * 6
+# permutation(c, a, b, 0, minn, ans)
+# print(str(ans[0]) + " " + str(ans[1]) + " " + str(ans[2]) + " " + str(ans[3]))
+
+# The Boggle Game
+
+VOWELS = "AEOYIU"
+DIRs = [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]]
+start = True
+
+def count_vowels(word):
+  res = 0
+  for w in word:
+    if w in VOWELS:
+      res += 1
+  return res
+
+def find_words(board, x, y, cur_word, visited, found_words):
+  if len(cur_word) == 4:
+    if count_vowels(cur_word) == 2:
+      found_words.add(cur_word)
+    return
+  
+  visited[x][y] = True
+  for d in DIRs:
+    nx = x + d[0]
+    ny = y + d[1]
+    if 0 <= nx < 4 and 0 <= ny < 4 and not visited[nx][ny]:
+      new_cur_word = cur_word + board[nx][ny]
+      find_words(board, nx, ny, new_cur_word, visited, found_words)
+  visited[x][y] = False
+
+def solve():
+  global start
+
+  board = [[[0 for _ in range(4)] for _ in range(4)] for _ in range(2)]
+
+  if not start:
+    input()
+
+  for i in range(4):
+    line = list(input().split())
+    if line[0] == '#':
+      exit()
+    for j in range(8):
+      board[j >> 2][i][j & 3] = line[j]
+
+  if not start:
+    print()
+  start = False
+
+  visited = [[False for _ in range(4)] for _ in range(4)]
+  words = [set() for _ in range(2)]
+
+  for board_id in [0, 1]:
     for i in range(4):
-      ans[i] = a[i]
+      for j in range(4):
+        cur_word = ""
+        cur_word += board[board_id][i][j]
+        find_words(board[board_id], i, j, cur_word, visited, words[board_id])
+  
+  common_words = list()
+  for word in words[0]:
+    if word in words[1]:
+      common_words.append(word)
+  
+  common_words.sort()
+  if len(common_words) == 0:
+    print("There are no common words for this pair of boggle boards.")
+  else:
+    for word in common_words:
+      print(word)
 
-def permutation(c, a, b, j, minn, ans):
-  for i in range(5):
-    if (b[i]):
-      a[j] = i
-      b[i] = False
-      if j == 4:
-        check(c, a, minn, ans)
-      else:
-        permutation(c, a, b, j + 1, minn, ans)
-      b[i] = True
-
-a = []
-b = []
-ans = []
-c = list(map(int, input().split()))
-minn = []
-minn.append(1000000)
-minn.append(1)
-
-for i in range(5):
-  a.append(i)
-
-for i in range(4):
-  ans.append(0)
-
-b = [True] * 6
-permutation(c, a, b, 0, minn, ans)
-print(str(ans[0]) + " " + str(ans[1]) + " " + str(ans[2]) + " " + str(ans[3]))
+while True:
+  solve()
