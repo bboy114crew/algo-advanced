@@ -301,74 +301,93 @@ Sau khi gọi backTrack(pos + 1), ta hủy vết đã lưu các phần tử trư
 # permutation(c, a, b, 0, minn, ans)
 # print(str(ans[0]) + " " + str(ans[1]) + " " + str(ans[2]) + " " + str(ans[3]))
 
-# The Boggle Game
+# # The Boggle Game
 
-VOWELS = "AEOYIU"
-DIRs = [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]]
-start = True
+# VOWELS = "AEOYIU"
+# DIRs = [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]]
 
-def count_vowels(word):
-  res = 0
-  for w in word:
-    if w in VOWELS:
-      res += 1
-  return res
+# # just for checking whether to print new lines between test cases
+# start = True
 
-def find_words(board, x, y, cur_word, visited, found_words):
-  if len(cur_word) == 4:
-    if count_vowels(cur_word) == 2:
-      found_words.add(cur_word)
-    return
+# def count_vowels(word):
+#   res = 0
+#   for w in word:
+#     if w in VOWELS:
+#       res += 1
+#   return res
+
+# def find_words(board, x, y, cur_word, visited, found_words):
+#   if len(cur_word) == 4:
+#     if count_vowels(cur_word) == 2:
+#       found_words.add(cur_word)
+#     return
   
-  visited[x][y] = True
-  for d in DIRs:
-    nx = x + d[0]
-    ny = y + d[1]
-    if 0 <= nx < 4 and 0 <= ny < 4 and not visited[nx][ny]:
-      new_cur_word = cur_word + board[nx][ny]
-      find_words(board, nx, ny, new_cur_word, visited, found_words)
-  visited[x][y] = False
+#   visited[x][y] = True
+#   for d in DIRs:
+#     nx = x + d[0]
+#     ny = y + d[1]
+#     if 0 <= nx < 4 and 0 <= ny < 4 and not visited[nx][ny]:
+#       new_cur_word = cur_word + board[nx][ny]
+#       find_words(board, nx, ny, new_cur_word, visited, found_words)
+#   visited[x][y] = False
 
-def solve():
-  global start
+# def solve():
+#   global start
 
-  board = [[[0 for _ in range(4)] for _ in range(4)] for _ in range(2)]
+#   board = [[[0 for _ in range(4)] for _ in range(4)] for _ in range(2)]
 
-  if not start:
-    input()
+#   if not start:
+#     input()
 
-  for i in range(4):
-    line = list(input().split())
-    if line[0] == '#':
-      exit()
-    for j in range(8):
-      board[j >> 2][i][j & 3] = line[j]
+#   for i in range(4):
+#     line = list(input().split())
+#     if line[0] == '#':
+#       exit()
+#     for j in range(8):
+#       # characters 0..3 -> board[0][i][0..3], characters 4..7 -> board[1][i][0..3]
+#       board[j >> 2][i][j & 3] = line[j]
 
-  if not start:
-    print()
-  start = False
+#   if not start:
+#     print()
+#   start = False
 
-  visited = [[False for _ in range(4)] for _ in range(4)]
-  words = [set() for _ in range(2)]
+#   visited = [[False for _ in range(4)] for _ in range(4)]
+#   words = [set() for _ in range(2)]
 
-  for board_id in [0, 1]:
-    for i in range(4):
-      for j in range(4):
-        cur_word = ""
-        cur_word += board[board_id][i][j]
-        find_words(board[board_id], i, j, cur_word, visited, words[board_id])
+#   for board_id in [0, 1]:
+#     for i in range(4):
+#       for j in range(4):
+#         cur_word = ""
+#         cur_word += board[board_id][i][j]
+#         find_words(board[board_id], i, j, cur_word, visited, words[board_id])
   
-  common_words = list()
-  for word in words[0]:
-    if word in words[1]:
-      common_words.append(word)
+#   common_words = list()
+#   for word in words[0]:
+#     if word in words[1]:
+#       common_words.append(word)
   
-  common_words.sort()
-  if len(common_words) == 0:
-    print("There are no common words for this pair of boggle boards.")
-  else:
-    for word in common_words:
-      print(word)
+#   common_words.sort()
+#   if len(common_words) == 0:
+#     print("There are no common words for this pair of boggle boards.")
+#   else:
+#     for word in common_words:
+#       print(word)
 
+# while True:
+#   solve()
+
+# Splitting Numbers
 while True:
-  solve()
+  n = int(input())
+  if n == 0:
+    exit()
+  a = b = 0
+  flag = 1
+  for i in range(32):
+    if (n >> i) & 1:
+      if flag:
+        a += 1 << i
+      else:
+        b += 1 << i
+      flag ^= 1
+  print(a, b)
