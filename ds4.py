@@ -289,68 +289,120 @@ Với mỗi chỉ số i từ 1 đến n, ta thêm điểm có tọa độ (i,d_
 Độ phức tạp: O(n log n) với n là số phần tử của dãy số a.
 """
 
-INF = int(1e9)
-class Point:
-  def __init__(self, x=0, y=0):
-    self.x = x
-    self.y = y
+# INF = int(1e9)
+# class Point:
+#   def __init__(self, x=0, y=0):
+#     self.x = x
+#     self.y = y
  
  
-def distance(p1, p2):
-  x = p1.x - p2.x
-  y = p1.y - p2.y
-  return x*x + y*y
+# def distance(p1, p2):
+#   x = p1.x - p2.x
+#   y = p1.y - p2.y
+#   return x*x + y*y
  
  
-def bruteForce(point_set, left, right):
-  min_dist = INF
-  for i in range(left, right):
-    for j in range(i+1, right):
-      min_dist = min(min_dist, distance(point_set[i], point_set[j]))
-  return min_dist
+# def bruteForce(point_set, left, right):
+#   min_dist = INF
+#   for i in range(left, right):
+#     for j in range(i+1, right):
+#       min_dist = min(min_dist, distance(point_set[i], point_set[j]))
+#   return min_dist
  
  
-def stripClosest(point_set, left, right, mid, min_dist):
-  point_mid = point_set[mid]
-  splitted_points = []
-  for i in range(left, right):
-    if (point_set[i].x - point_mid.x) ** 2 <= min_dist:
-      splitted_points.append(point_set[i])
-  splitted_points.sort(key=lambda point: point.y)
-  l = len(splitted_points)
-  smallest = INF
-  for i in range(l):
-    for j in range(i+1, l):
-      if (splitted_points[i].y - splitted_points[j].y) ** 2 >= min_dist:
-        break
-      d = distance(splitted_points[i], splitted_points[j])
-      smallest = min(smallest, d)
-  return smallest
+# def stripClosest(point_set, left, right, mid, min_dist):
+#   point_mid = point_set[mid]
+#   splitted_points = []
+#   for i in range(left, right):
+#     if (point_set[i].x - point_mid.x) ** 2 <= min_dist:
+#       splitted_points.append(point_set[i])
+#   splitted_points.sort(key=lambda point: point.y)
+#   l = len(splitted_points)
+#   smallest = INF
+#   for i in range(l):
+#     for j in range(i+1, l):
+#       if (splitted_points[i].y - splitted_points[j].y) ** 2 >= min_dist:
+#         break
+#       d = distance(splitted_points[i], splitted_points[j])
+#       smallest = min(smallest, d)
+#   return smallest
 
  
-def closestUtil(point_set, left, right):
-  if right - left <= 3:
-    return bruteForce(point_set, left, right)
+# def closestUtil(point_set, left, right):
+#   if right - left <= 3:
+#     return bruteForce(point_set, left, right)
 
-  mid = (left + right) // 2
-  dist_left = closestUtil(point_set, left, mid)
-  dist_right = closestUtil(point_set, mid+1, right)
-  dist_min = min(dist_left, dist_right)
+#   mid = (left + right) // 2
+#   dist_left = closestUtil(point_set, left, mid)
+#   dist_right = closestUtil(point_set, mid+1, right)
+#   dist_min = min(dist_left, dist_right)
 
-  return min(dist_min, stripClosest(point_set, left, right, mid, dist_min))
+#   return min(dist_min, stripClosest(point_set, left, right, mid, dist_min))
  
  
-n = int(input())
-a = list(map(int, input().split()))
+# n = int(input())
+# a = list(map(int, input().split()))
  
-pref = [0]
-for i in range(n):
-  pref.append(pref[i] + a[i])
+# pref = [0]
+# for i in range(n):
+#   pref.append(pref[i] + a[i])
  
-point_set = []
-for i in range(n):
-  point_set.append(Point(i, pref[i+1]))
+# point_set = []
+# for i in range(n):
+#   point_set.append(Point(i, pref[i+1]))
  
-ans = closestUtil(point_set, 0, n)
+# ans = closestUtil(point_set, 0, n)
 
-print(str(ans))
+# print(str(ans))
+
+# Fill the Containers
+"""
+Bài toán được phát biểu ngắn gọn lại như sau: Cho một dãy số gồm n phần tử, cần chia nn số thành m đoạn phân biệt. Tìm cách chia sao cho tổng lớn nhất là nhỏ nhất.
+
+Ý tưởng của bài này là chúng ta sẽ chặt nhị phân trên kết quả.
+Với kết quả có được, ta sẽ kiểm tra xem với sức chứa đó thì có thể có cách chia sao cho sức chứa đó là lớn nhất không.
+Nếu có thể chia được, chúng ta tối ưu kết quả bằng cách giới hạn chặn trên, , ngược lại ta sẽ tang chặn dưới lên để tìm được kết quả, .
+
+Giả sử, chúng ta có được giá trị sức chứa x, và muốn kiểm tra xem x có thể là kết quả hay không.
+Thuật toán kiểm tra như sau, duyệt toàn bộ mảng và cộng dồn các giá trị cho đến khi giá trị lớn hơn x, ta tiến hành tăng biến đếm thùng chứa lên, và gán lại giá trị tổng về 0.
+Kết thúc vòng lặp, nếu số lượng thùng chứa nhỏ hơn hoặc bằng m thì x là kết quả được chấp nhận.
+
+Ở đây, tư tưởng chia để trị (Divide and Conquer) nằm ở việc chúng ta sẽ chia nhỏ vùng kết quả có thể để tìm ra kết quả phù hợp thông qua thuật toán tìm kiếm nhị phân (Binarry Search).
+
+Độ phức tạp: O(NlogS) với N là số lượng bình sữa và S là tổng lượng sữa trong các bình.
+"""
+def can_fill(capacity, a, m):
+  container = 0
+  numberOfContainer = 0
+  for i in range(len(a)):
+    if a[i] > capacity:
+      return False
+    if container + a[i] > capacity:
+      container = 0
+    if container == 0:
+      numberOfContainer += 1
+    if numberOfContainer > m:
+      return False
+    container += a[i]
+  return True
+def binary_search(a, total, m):
+  low = 0
+  high = total
+  res = -1
+  # Find max sum of range
+  while low <= high:
+    mid = (low + high) // 2
+    if can_fill(mid, a, m):
+      res = mid
+      high = mid - 1
+    else:
+      low = mid + 1
+  return res
+while True:
+  try:
+    n, m = map(int, input().split())
+    c = list(map(int, input().split()))
+    total = sum(c)
+    print(binary_search(c, total, m))
+  except EOFError:
+    break
