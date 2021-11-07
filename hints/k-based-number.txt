@@ -1,0 +1,58 @@
+Xây dựng 1 số có N chữ số --> từ 1 số có N - 1 chữ số
+ 
+Chỉ đếm những số valid
+Thêm 1 chữ số vào --> chữ số cuối cùng của số bị thêm vào
+0: thêm 1, 2, 3, ... K-1
+1: thêm 0, 1, 2, 3, ..., K-1
+2: thêm 0, 1, 2, 3, ..., K-1
+3: thêm 0, 1, 2, 3, ..., K-1
+...
+K-1: thêm 0, 1, 2, 3, ..., K-1
+ 
+ 
+============================================================
+Cách 1: 
+Gọi, F[i][j] là số lượng số có i chữ số, và chữ số cuối cùng là j
+F[1][j] = 1 với j > 0
+F[1][0] = 0
+ 
+for i = 2 to N:
+  f[i][j] = sum(f[i-1][j']) nếu j != 0
+  f[i][0] = sum(f[i-1][j']) với j' > 0
+ 
+===========================================================
+Cách 2: 
+endWith0[i] là số lượng số có i chữ số và kết thúc là chữ số 0
+endNot0[i] là số lượng số có i chữ số và kết thúc là chữ số != 0
+ 
+read(N, K)
+if N == 1:
+	print(K)
+else:
+  endWith0[1] = 0
+  endNot0[1] = K-1
+  for i = 2 to N:                       
+     endWith0[i] = endNot0[i-1]
+     endNot0[i] = (endNot0[i-1] + endWith0[i-1]) * (K-1)
+	 # End với 1, 2, 3, 4, ..., k-1, nói cách khác là K-1 chữ số
+   print(endWith0[N] + endNot0[N])                 
+ 
+ 
+Độ phức tạp: O(N)               
+ 
+============================================================
+Example
+N = 3, K = 10
+ 
+endWith0[1] = 0
+endNot0[1] = 9
+ 
+Step 1: i = 2
+endWith0[2] =  endNot0[1] = 9
+endNot0[2] = (endNot0[1] + endWith0[1]) * 9 = 81 --> 11, 12, 13, 14, 15
+ 
+Step 2: i = 3
+endWith0[3] =  endNot0[2] = 81 --> 110, 120, 130, 140, ...
+endNot0[3] = (endNot0[2] + endWith0[2]) * 9 = (81 + 9) * 9 = 810
+ 
+Answer: endWith0[N] + endNot0[N] --> 81 + 810 = 891
